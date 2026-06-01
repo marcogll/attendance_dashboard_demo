@@ -15,6 +15,7 @@ COPY dashboard/sucursal.html /usr/share/nginx/html/sucursal.html
 COPY dashboard/sucursal.js /usr/share/nginx/html/sucursal.js
 COPY dashboard/data.json /usr/share/nginx/html/data.json
 
-EXPOSE 80
+# Coolify expects port 3000 by default
+EXPOSE 3000
 
 CMD ["nginx", "-g", "daemon off;"]

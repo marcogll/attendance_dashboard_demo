@@ -1,6 +1,8 @@
 services:
   dashboard:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     image: attendance-dashboard:latest
     container_name: attendance-dashboard
     ports:
