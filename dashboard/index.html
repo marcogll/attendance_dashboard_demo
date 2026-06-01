@@ -1,0 +1,622 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+  <title>Massive Dynamic - Dashboard de Asistencia</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0/dist/css/tabler.min.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"/>
+  <style>
+    .chart-container { min-height: 300px; }
+    .table-responsive { min-height: 400px; }
+    .kpi-sm { font-size: 1.6rem; }
+    .kpi-icon { width: 3rem; height: 3rem; border-radius: .5rem; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-right: 1rem; }
+    .kpi-card-body { display: flex; align-items: center; }
+    .kpi-card-info { flex: 1; }
+    .kpi-card-value { font-size: 1.75rem; font-weight: 700; line-height: 1.2; }
+    .kpi-card-label { font-size: .8125rem; color: #667382; }
+    .theme-toggle-btn { cursor: pointer; }
+  </style>
+</head>
+<body class="layout-fluid">
+  <div class="page">
+    <!-- Sidebar -->
+    <aside class="navbar navbar-vertical navbar-expand-lg" data-bs-theme="dark">
+      <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <h1 class="navbar-brand navbar-brand-autodark">
+          <a href="./">
+            <span class="navbar-brand-image"><i class="ti ti-fingerprint fs-1"></i></span>
+            Massive Dynamic
+          </a>
+        </h1>
+        <div class="collapse navbar-collapse" id="sidebar-menu">
+          <ul class="navbar-nav pt-lg-3">
+            <li class="nav-item">
+              <a class="nav-link active" href="./">
+                <span class="nav-link-icon d-md-none d-lg-inline-block"><i class="ti ti-home"></i></span>
+                <span class="nav-link-title">Dashboard</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="empleado.html">
+                <span class="nav-link-icon d-md-none d-lg-inline-block"><i class="ti ti-user"></i></span>
+                <span class="nav-link-title">Por Empleado</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="sucursal.html">
+                <span class="nav-link-icon d-md-none d-lg-inline-block"><i class="ti ti-building"></i></span>
+                <span class="nav-link-title">Por Sucursal</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#registros">
+                <span class="nav-link-icon d-md-none d-lg-inline-block"><i class="ti ti-list"></i></span>
+                <span class="nav-link-title">Registros</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </aside>
+
+    <div class="page-wrapper">
+      <!-- Header -->
+      <div class="page-header d-print-none">
+        <div class="container-xl">
+          <div class="row g-2 align-items-center">
+            <div class="col">
+              <h2 class="page-title">Dashboard de Asistencia</h2>
+              <div class="text-muted mt-1">Checadas de empleados - Massive Dynamic</div>
+            </div>
+            <div class="col-auto ms-auto d-print-none">
+              <div class="btn-list">
+                <button class="btn theme-toggle-btn" title="Cambiar tema">
+                  <i class="ti ti-moon"></i>
+                </button>
+                <button class="btn" id="refreshBtn" onclick="location.reload()">
+                  <i class="ti ti-refresh"></i> Actualizar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Page body -->
+      <div class="page-body">
+        <div class="container-xl">
+
+          <!-- KPI Cards Row 1 -->
+          <div class="row row-deck row-cards" id="kpi-cards">
+            <div class="col-sm-6 col-lg-4 col-xl-3">
+              <div class="card">
+                <div class="card-body kpi-card-body">
+                  <div class="kpi-icon bg-primary-lt text-primary"><i class="ti ti-fingerprint"></i></div>
+                  <div class="kpi-card-info">
+                    <div class="kpi-card-label">Total Registros</div>
+                    <div class="kpi-card-value" id="kpi-total">0</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-4 col-xl-3">
+              <div class="card">
+                <div class="card-body kpi-card-body">
+                  <div class="kpi-icon bg-success-lt text-success"><i class="ti ti-login"></i></div>
+                  <div class="kpi-card-info">
+                    <div class="kpi-card-label">Entradas</div>
+                    <div class="kpi-card-value text-success" id="kpi-entradas">0</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-4 col-xl-3">
+              <div class="card">
+                <div class="card-body kpi-card-body">
+                  <div class="kpi-icon bg-info-lt text-info"><i class="ti ti-logout"></i></div>
+                  <div class="kpi-card-info">
+                    <div class="kpi-card-label">Salidas</div>
+                    <div class="kpi-card-value text-info" id="kpi-salidas">0</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-4 col-xl-3">
+              <div class="card">
+                <div class="card-body kpi-card-body">
+                  <div class="kpi-icon bg-danger-lt text-danger"><i class="ti ti-alert-triangle"></i></div>
+                  <div class="kpi-card-info">
+                    <div class="kpi-card-label">Faltas</div>
+                    <div class="kpi-card-value text-danger" id="kpi-faltas">0</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-4 col-xl-3">
+              <div class="card">
+                <div class="card-body kpi-card-body">
+                  <div class="kpi-icon bg-warning-lt text-warning"><i class="ti ti-clock-plus"></i></div>
+                  <div class="kpi-card-info">
+                    <div class="kpi-card-label">Horas Extra</div>
+                    <div class="kpi-card-value text-warning" id="kpi-hextra">0</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-4 col-xl-3">
+              <div class="card">
+                <div class="card-body kpi-card-body">
+                  <div class="kpi-icon bg-secondary-lt text-secondary"><i class="ti ti-users"></i></div>
+                  <div class="kpi-card-info">
+                    <div class="kpi-card-label">Empleados</div>
+                    <div class="kpi-card-value text-primary" id="kpi-empleados">0</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-4 col-xl-3">
+              <div class="card">
+                <div class="card-body kpi-card-body">
+                  <div class="kpi-icon bg-purple-lt text-purple"><i class="ti ti-building"></i></div>
+                  <div class="kpi-card-info">
+                    <div class="kpi-card-label">Sucursales</div>
+                    <div class="kpi-card-value text-purple" id="kpi-sucursales">0</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-4 col-xl-3">
+              <div class="card">
+                <div class="card-body kpi-card-body">
+                  <div class="kpi-icon bg-pink-lt text-pink"><i class="ti ti-calendar-event"></i></div>
+                  <div class="kpi-card-info">
+                    <div class="kpi-card-label">Rango de Fechas</div>
+                    <div class="kpi-card-value" id="kpi-rango">-</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- KPI Cards Row 2 (Análisis) -->
+          <div class="row row-deck row-cards mt-3" id="kpi-analisis">
+            <div class="col-sm-6 col-lg-4 col-xl-3">
+              <div class="card">
+                <div class="card-body kpi-card-body">
+                  <div class="kpi-icon bg-success-lt text-success"><i class="ti ti-check"></i></div>
+                  <div class="kpi-card-info">
+                    <div class="kpi-card-label">Prom. Puntualidad</div>
+                    <div class="kpi-card-value text-success" id="kpi-prom-puntualidad">0%</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-4 col-xl-3">
+              <div class="card">
+                <div class="card-body kpi-card-body">
+                  <div class="kpi-icon bg-info-lt text-info"><i class="ti ti-checkup-list"></i></div>
+                  <div class="kpi-card-info">
+                    <div class="kpi-card-label">Prom. Asistencia</div>
+                    <div class="kpi-card-value text-info" id="kpi-prom-asistencia">0%</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-4 col-xl-3">
+              <div class="card">
+                <div class="card-body kpi-card-body">
+                  <div class="kpi-icon bg-warning-lt text-warning"><i class="ti ti-trending-up"></i></div>
+                  <div class="kpi-card-info">
+                    <div class="kpi-card-label">Prom. Horas/Día</div>
+                    <div class="kpi-card-value text-warning" id="kpi-prom-horas">0h</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-4 col-xl-3">
+              <div class="card">
+                <div class="card-body kpi-card-body">
+                  <div class="kpi-icon bg-danger-lt text-danger"><i class="ti ti-flame"></i></div>
+                  <div class="kpi-card-info">
+                    <div class="kpi-card-label">Riesgo Promedio</div>
+                    <div class="kpi-card-value text-danger" id="kpi-prom-riesgo">0</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-4 col-xl-3">
+              <div class="card">
+                <div class="card-body kpi-card-body">
+                  <div class="kpi-icon bg-cyan-lt text-cyan"><i class="ti ti-file-invoice"></i></div>
+                  <div class="kpi-card-info">
+                    <div class="kpi-card-label">Permisos</div>
+                    <div class="kpi-card-value text-cyan" id="kpi-permisos">0</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-4 col-xl-3">
+              <div class="card">
+                <div class="card-body kpi-card-body">
+                  <div class="kpi-icon bg-indigo-lt text-indigo"><i class="ti ti-vacuum-cleaner"></i></div>
+                  <div class="kpi-card-info">
+                    <div class="kpi-card-label">Vacaciones</div>
+                    <div class="kpi-card-value text-indigo" id="kpi-vacaciones">0</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-4 col-xl-3">
+              <div class="card">
+                <div class="card-body kpi-card-body">
+                  <div class="kpi-icon bg-teal-lt text-teal"><i class="ti ti-heartbeat"></i></div>
+                  <div class="kpi-card-info">
+                    <div class="kpi-card-label">Incapacidades</div>
+                    <div class="kpi-card-value text-teal" id="kpi-incapacidades">0</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-4 col-xl-3">
+              <div class="card">
+                <div class="card-body kpi-card-body">
+                  <div class="kpi-icon bg-orange-lt text-orange"><i class="ti ti-alert-circle"></i></div>
+                  <div class="kpi-card-info">
+                    <div class="kpi-card-label">Olvidos de Checada</div>
+                    <div class="kpi-card-value text-orange" id="kpi-olvido">0</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tops y Alertas -->
+          <div class="row row-cards mt-3" id="tops-alertas">
+            <div class="col-12 mb-2">
+              <h3 class="page-title h4"><i class="ti ti-trophy me-2"></i>Tops y Alertas</h3>
+            </div>
+            <!-- Empleados -->
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+              <div class="card card-sm">
+                <div class="card-body">
+                  <div class="d-flex align-items-center mb-2">
+                    <span class="badge bg-danger me-2">Empleado</span>
+                    <span class="text-muted small">Más faltas</span>
+                  </div>
+                  <div class="h4 mb-0" id="top-emp-faltas-name">-</div>
+                  <div class="text-muted small" id="top-emp-faltas-val">0 faltas</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+              <div class="card card-sm">
+                <div class="card-body">
+                  <div class="d-flex align-items-center mb-2">
+                    <span class="badge bg-warning me-2">Empleado</span>
+                    <span class="text-muted small">Más retardos</span>
+                  </div>
+                  <div class="h4 mb-0" id="top-emp-ret-name">-</div>
+                  <div class="text-muted small" id="top-emp-ret-val">0 retardos</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+              <div class="card card-sm">
+                <div class="card-body">
+                  <div class="d-flex align-items-center mb-2">
+                    <span class="badge bg-orange me-2">Empleado</span>
+                    <span class="text-muted small">Más horas extra</span>
+                  </div>
+                  <div class="h4 mb-0" id="top-emp-hextra-name">-</div>
+                  <div class="text-muted small" id="top-emp-hextra-val">0 h.extra</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+              <div class="card card-sm">
+                <div class="card-body">
+                  <div class="d-flex align-items-center mb-2">
+                    <span class="badge bg-success me-2">Empleado</span>
+                    <span class="text-muted small">Más puntual</span>
+                  </div>
+                  <div class="h4 mb-0" id="top-emp-punt-name">-</div>
+                  <div class="text-muted small" id="top-emp-punt-val">0% punt.</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+              <div class="card card-sm">
+                <div class="card-body">
+                  <div class="d-flex align-items-center mb-2">
+                    <span class="badge bg-info me-2">Empleado</span>
+                    <span class="text-muted small">Salidas anticipadas</span>
+                  </div>
+                  <div class="h4 mb-0" id="top-emp-salant-name">-</div>
+                  <div class="text-muted small" id="top-emp-salant-val">0 olvidos</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+              <div class="card card-sm">
+                <div class="card-body">
+                  <div class="d-flex align-items-center mb-2">
+                    <span class="badge bg-secondary me-2">Empleado</span>
+                    <span class="text-muted small">Mayor riesgo</span>
+                  </div>
+                  <div class="h4 mb-0" id="top-emp-riesgo-name">-</div>
+                  <div class="text-muted small" id="top-emp-riesgo-val">0 riesgo</div>
+                </div>
+              </div>
+            </div>
+            <!-- Sucursales -->
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+              <div class="card card-sm">
+                <div class="card-body">
+                  <div class="d-flex align-items-center mb-2">
+                    <span class="badge bg-danger me-2">Sucursal</span>
+                    <span class="text-muted small">Más faltas</span>
+                  </div>
+                  <div class="h4 mb-0" id="top-suc-faltas-name">-</div>
+                  <div class="text-muted small" id="top-suc-faltas-val">0 faltas</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+              <div class="card card-sm">
+                <div class="card-body">
+                  <div class="d-flex align-items-center mb-2">
+                    <span class="badge bg-warning me-2">Sucursal</span>
+                    <span class="text-muted small">Más retardos</span>
+                  </div>
+                  <div class="h4 mb-0" id="top-suc-ret-name">-</div>
+                  <div class="text-muted small" id="top-suc-ret-val">0 retardos</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+              <div class="card card-sm">
+                <div class="card-body">
+                  <div class="d-flex align-items-center mb-2">
+                    <span class="badge bg-orange me-2">Sucursal</span>
+                    <span class="text-muted small">Más horas extra</span>
+                  </div>
+                  <div class="h4 mb-0" id="top-suc-hextra-name">-</div>
+                  <div class="text-muted small" id="top-suc-hextra-val">0 h.extra</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+              <div class="card card-sm">
+                <div class="card-body">
+                  <div class="d-flex align-items-center mb-2">
+                    <span class="badge bg-success me-2">Sucursal</span>
+                    <span class="text-muted small">Más puntual</span>
+                  </div>
+                  <div class="h4 mb-0" id="top-suc-punt-name">-</div>
+                  <div class="text-muted small" id="top-suc-punt-val">0% punt.</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+              <div class="card card-sm">
+                <div class="card-body">
+                  <div class="d-flex align-items-center mb-2">
+                    <span class="badge bg-info me-2">Sucursal</span>
+                    <span class="text-muted small">Salidas anticipadas</span>
+                  </div>
+                  <div class="h4 mb-0" id="top-suc-salant-name">-</div>
+                  <div class="text-muted small" id="top-suc-salant-val">0 olvidos</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+              <div class="card card-sm">
+                <div class="card-body">
+                  <div class="d-flex align-items-center mb-2">
+                    <span class="badge bg-secondary me-2">Sucursal</span>
+                    <span class="text-muted small">Mayor riesgo</span>
+                  </div>
+                  <div class="h4 mb-0" id="top-suc-riesgo-name">-</div>
+                  <div class="text-muted small" id="top-suc-riesgo-val">0 riesgo</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts Row 1 -->
+          <div class="row row-cards mt-3">
+            <div class="col-lg-8">
+              <div class="card">
+                <div class="card-header"><h3 class="card-title">Registros por Día</h3></div>
+                <div class="card-body"><div id="chart-timeline" class="chart-container"></div></div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="card">
+                <div class="card-header"><h3 class="card-title">Distribución por Sucursal</h3></div>
+                <div class="card-body"><div id="chart-sucursal" class="chart-container"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts Row 2 -->
+          <div class="row row-cards mt-3">
+            <div class="col-lg-6">
+              <div class="card">
+                <div class="card-header"><h3 class="card-title">Eventos por Tipo</h3></div>
+                <div class="card-body"><div id="chart-eventos" class="chart-container"></div></div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card">
+                <div class="card-header"><h3 class="card-title">Top 10 Empleados (más registros)</h3></div>
+                <div class="card-body"><div id="chart-top-emp" class="chart-container"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts Row 3 (Nuevos) -->
+          <div class="row row-cards mt-3">
+            <div class="col-lg-6">
+              <div class="card">
+                <div class="card-header"><h3 class="card-title">Actividad por Día de la Semana</h3></div>
+                <div class="card-body"><div id="chart-weekday" class="chart-container"></div></div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card">
+                <div class="card-header"><h3 class="card-title">Tendencia Semanal</h3></div>
+                <div class="card-body"><div id="chart-weekly-trend" class="chart-container"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sección Indicadores & Motivos -->
+          <div class="row row-cards mt-3">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title"><i class="ti ti-chart-pie me-2"></i>Indicadores y Análisis de Motivos</h3>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-lg-4">
+                      <div id="chart-arquetipos" class="chart-container"></div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div id="chart-motivos" class="chart-container"></div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div id="chart-comparativa" class="chart-container"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ranking Empleados Indicador -->
+          <div class="row row-cards mt-3">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title"><i class="ti ti-award me-2"></i>Ranking de Empleados por Indicador</h3>
+                </div>
+                <div class="card-body p-0">
+                  <div class="table-responsive">
+                    <table class="table table-vcenter table-striped table-hover table-sm" id="indicadores-table">
+                      <thead>
+                        <tr>
+                          <th>Empleado</th>
+                          <th>Sucursal</th>
+                          <th>Arquetipo</th>
+                          <th>Días Laborados</th>
+                          <th>Prom. Horas</th>
+                          <th>Retardos</th>
+                          <th>Faltas</th>
+                          <th>Puntualidad</th>
+                          <th>Asistencia</th>
+                          <th>Riesgo</th>
+                          <th>Indicador</th>
+                        </tr>
+                      </thead>
+                      <tbody id="indicadores-body"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Table Section -->
+          <div class="row row-cards mt-3" id="registros">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">Registros Detallados</h3>
+                  <div class="card-actions">
+                    <div class="row g-2">
+                      <div class="col">
+                        <select class="form-select" id="filter-branch">
+                          <option value="">Todas las sucursales</option>
+                        </select>
+                      </div>
+                      <div class="col">
+                        <select class="form-select" id="filter-event">
+                          <option value="">Todos los eventos</option>
+                        </select>
+                      </div>
+                      <div class="col">
+                        <select class="form-select" id="filter-emp">
+                          <option value="">Todos los empleados</option>
+                        </select>
+                      </div>
+                      <div class="col">
+                        <input type="date" class="form-control" id="filter-date" placeholder="Fecha"/>
+                      </div>
+                      <div class="col-auto">
+                        <button class="btn btn-primary" id="apply-filters">Filtrar</button>
+                        <button class="btn btn-ghost-secondary" id="reset-filters">Limpiar</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body p-0">
+                  <div class="table-responsive">
+                    <table class="table table-vcenter table-striped table-hover table-sm" id="records-table">
+                      <thead>
+                        <tr>
+                          <th>Fecha/Hora</th>
+                          <th>Empleado</th>
+                          <th>No. Empleado</th>
+                          <th>Sucursal</th>
+                          <th>Evento</th>
+                          <th>Dispositivo</th>
+                          <th>Estado</th>
+                          <th>Arquetipo</th>
+                        </tr>
+                      </thead>
+                      <tbody id="records-body"></tbody>
+                    </table>
+                  </div>
+                  <div class="card-footer d-flex align-items-center">
+                    <p class="m-0 text-muted" id="table-info">Mostrando 0 de 0 registros</p>
+                    <ul class="pagination m-0 ms-auto" id="table-pagination"></ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <footer class="footer footer-transparent d-print-none mt-4">
+            <div class="container-xl">
+              <div class="row text-center align-items-center flex-row-reverse">
+                <div class="col-12 col-lg-auto mt-3 mt-lg-0">
+                  <ul class="list-inline list-inline-dots mb-0">
+                    <li class="list-inline-item">Massive Dynamic &copy; 2025</li>
+                    <li class="list-inline-item">Sistema de Asistencia NFC</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </footer>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0/dist/js/tabler.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <script src="theme.js"></script>
+  <script src="analisis.js"></script>
+  <script src="charts-theme.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

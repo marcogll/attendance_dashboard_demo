@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+  <title>Massive Dynamic - Vista por Empleado</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0/dist/css/tabler.min.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"/>
+  <style>
+    .chart-container { min-height: 280px; }
+    .kpi-card { text-align: center; padding: 1rem; }
+    .kpi-value { font-size: 2rem; font-weight: 700; }
+    .kpi-label { font-size: .8rem; color: #667382; }
+    .theme-toggle-btn { cursor: pointer; }
+    .kpi-icon { width: 3rem; height: 3rem; border-radius: .5rem; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-right: 1rem; }
+    .kpi-card-body { display: flex; align-items: center; }
+    .kpi-card-info { flex: 1; }
+    .kpi-card-value { font-size: 1.75rem; font-weight: 700; line-height: 1.2; }
+  </style>
+</head>
+<body class="layout-fluid">
+  <div class="page">
+    <!-- Sidebar -->
+    <aside class="navbar navbar-vertical navbar-expand-lg" data-bs-theme="dark">
+      <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <h1 class="navbar-brand navbar-brand-autodark">
+          <a href="./">
+            <span class="navbar-brand-image"><i class="ti ti-fingerprint fs-1"></i></span>
+            Massive Dynamic
+          </a>
+        </h1>
+        <div class="collapse navbar-collapse" id="sidebar-menu">
+          <ul class="navbar-nav pt-lg-3">
+            <li class="nav-item">
+              <a class="nav-link" href="./">
+                <span class="nav-link-icon d-md-none d-lg-inline-block"><i class="ti ti-home"></i></span>
+                <span class="nav-link-title">Dashboard</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="empleado.html">
+                <span class="nav-link-icon d-md-none d-lg-inline-block"><i class="ti ti-user"></i></span>
+                <span class="nav-link-title">Por Empleado</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="sucursal.html">
+                <span class="nav-link-icon d-md-none d-lg-inline-block"><i class="ti ti-building"></i></span>
+                <span class="nav-link-title">Por Sucursal</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="./#registros">
+                <span class="nav-link-icon d-md-none d-lg-inline-block"><i class="ti ti-list"></i></span>
+                <span class="nav-link-title">Registros</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </aside>
+
+    <div class="page-wrapper">
+      <div class="page-header d-print-none">
+        <div class="container-xl">
+          <div class="row g-2 align-items-center">
+            <div class="col">
+              <h2 class="page-title">Vista por Empleado</h2>
+              <div class="text-muted mt-1">Análisis detallado de asistencia individual</div>
+            </div>
+            <div class="col-auto ms-auto d-print-none">
+              <div class="btn-list">
+                <button class="btn theme-toggle-btn" title="Cambiar tema"><i class="ti ti-moon"></i></button>
+                <select class="form-select" id="empleado-select" style="min-width: 280px;">
+                  <option value="">Selecciona un empleado...</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-body">
+        <div class="container-xl">
+
+          <!-- Empleado Info Header -->
+          <div id="empleado-info" class="row row-cards" style="display:none;">
+            <div class="col-12">
+              <div class="card card-sm">
+                <div class="card-body d-flex align-items-center">
+                  <span class="avatar avatar-lg me-3 bg-primary text-white fs-1" id="emp-avatar">👤</span>
+                  <div>
+                    <h3 class="card-title m-0" id="emp-name">-</h3>
+                    <div class="text-muted" id="emp-meta">-</div>
+                  </div>
+                  <div class="ms-auto">
+                    <span class="badge bg-secondary fs-5 px-3 py-2" id="emp-indicador">-</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- KPIs Empleado -->
+          <div id="kpi-empleado" class="row row-cards mt-3" style="display:none;">
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+              <div class="card kpi-card">
+                <div class="kpi-value text-primary" id="emp-kpi-dias">0</div>
+                <div class="kpi-label">Días Laborados</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+              <div class="card kpi-card">
+                <div class="kpi-value text-info" id="emp-kpi-horas">0</div>
+                <div class="kpi-label">Prom. Horas/Día</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+              <div class="card kpi-card">
+                <div class="kpi-value text-success" id="emp-kpi-total-horas">0</div>
+                <div class="kpi-label">Total Horas</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+              <div class="card kpi-card">
+                <div class="kpi-value text-warning" id="emp-kpi-retardos">0</div>
+                <div class="kpi-label">Retardos</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+              <div class="card kpi-card">
+                <div class="kpi-value text-danger" id="emp-kpi-faltas">0</div>
+                <div class="kpi-label">Faltas</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+              <div class="card kpi-card">
+                <div class="kpi-value text-cyan" id="emp-kpi-permisos">0</div>
+                <div class="kpi-label">Permisos</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+              <div class="card kpi-card">
+                <div class="kpi-value text-purple" id="emp-kpi-vacaciones">0</div>
+                <div class="kpi-label">Vacaciones</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+              <div class="card kpi-card">
+                <div class="kpi-value text-pink" id="emp-kpi-incapacidades">0</div>
+                <div class="kpi-label">Incapacidades</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+              <div class="card kpi-card">
+                <div class="kpi-value text-orange" id="emp-kpi-hextra">0</div>
+                <div class="kpi-label">Horas Extra</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+              <div class="card kpi-card">
+                <div class="kpi-value text-success" id="emp-kpi-puntualidad">0%</div>
+                <div class="kpi-label">Puntualidad</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+              <div class="card kpi-card">
+                <div class="kpi-value text-secondary" id="emp-kpi-riesgo">0</div>
+                <div class="kpi-label">Índice de Riesgo</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+              <div class="card kpi-card">
+                <div class="kpi-value text-teal" id="emp-kpi-asistencia">0%</div>
+                <div class="kpi-label">Asistencia</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Gráficas Empleado -->
+          <div id="charts-empleado" class="row row-cards mt-3" style="display:none;">
+            <div class="col-lg-6">
+              <div class="card">
+                <div class="card-header"><h3 class="card-title">Registros por Día</h3></div>
+                <div class="card-body"><div id="chart-emp-timeline" class="chart-container"></div></div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card">
+                <div class="card-header"><h3 class="card-title">Eventos por Tipo</h3></div>
+                <div class="card-body"><div id="chart-emp-eventos" class="chart-container"></div></div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card">
+                <div class="card-header"><h3 class="card-title">Horas Trabajadas por Día</h3></div>
+                <div class="card-body"><div id="chart-emp-horas" class="chart-container"></div></div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card">
+                <div class="card-header"><h3 class="card-title">Horario de Entrada vs Salida</h3></div>
+                <div class="card-body"><div id="chart-emp-horario" class="chart-container"></div></div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card">
+                <div class="card-header"><h3 class="card-title">Actividad por Día de la Semana</h3></div>
+                <div class="card-body"><div id="chart-emp-weekday" class="chart-container"></div></div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card">
+                <div class="card-header"><h3 class="card-title">Distribución de Eventos (Radial)</h3></div>
+                <div class="card-body"><div id="chart-emp-radial" class="chart-container"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabla registros empleado -->
+          <div id="table-empleado" class="row row-cards mt-3" style="display:none;">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header"><h3 class="card-title">Registros del Empleado</h3></div>
+                <div class="card-body p-0">
+                  <div class="table-responsive">
+                    <table class="table table-vcenter table-striped table-hover table-sm">
+                      <thead>
+                        <tr><th>Fecha</th><th>Hora</th><th>Evento</th><th>Dispositivo</th><th>Estado</th></tr>
+                      </thead>
+                      <tbody id="emp-table-body"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <footer class="footer footer-transparent d-print-none mt-4">
+            <div class="container-xl">
+              <div class="row text-center align-items-center flex-row-reverse">
+                <div class="col-12 col-lg-auto mt-3 mt-lg-0">
+                  <ul class="list-inline list-inline-dots mb-0">
+                    <li class="list-inline-item">Massive Dynamic &copy; 2025</li>
+                    <li class="list-inline-item">Sistema de Asistencia NFC</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </footer>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0/dist/js/tabler.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <script src="theme.js"></script>
+  <script src="analisis.js"></script>
+  <script src="charts-theme.js"></script>
+  <script src="empleado.js"></script>
+</body>
+</html>

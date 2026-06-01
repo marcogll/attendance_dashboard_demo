@@ -1,0 +1,8 @@
+::1 - - [01/Jun/2026 13:51:34] code 404, message File not found
+::1 - - [01/Jun/2026 13:51:34] "GET /empleado.html HTTP/1.1" 404 -
+::1 - - [01/Jun/2026 13:51:34] code 404, message File not found
+::1 - - [01/Jun/2026 13:51:34] "GET /sucursal.html HTTP/1.1" 404 -
+::1 - - [01/Jun/2026 13:51:34] code 404, message File not found
+::1 - - [01/Jun/2026 13:51:34] "GET /analisis.js HTTP/1.1" 404 -
+::1 - - [01/Jun/2026 13:51:34] code 404, message File not found
+::1 - - [01/Jun/2026 13:51:34] "GET /data.json HTTP/1.1" 404 -

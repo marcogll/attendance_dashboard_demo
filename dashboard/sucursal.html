@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+  <title>Massive Dynamic - Vista por Sucursal</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0/dist/css/tabler.min.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"/>
+  <style>
+    .chart-container { min-height: 280px; }
+    .kpi-card { text-align: center; padding: 1rem; }
+    .kpi-value { font-size: 2rem; font-weight: 700; }
+    .kpi-label { font-size: .8rem; color: #667382; }
+    .theme-toggle-btn { cursor: pointer; }
+    .kpi-icon { width: 3rem; height: 3rem; border-radius: .5rem; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-right: 1rem; }
+    .kpi-card-body { display: flex; align-items: center; }
+    .kpi-card-info { flex: 1; }
+    .kpi-card-value { font-size: 1.75rem; font-weight: 700; line-height: 1.2; }
+  </style>
+</head>
+<body class="layout-fluid">
+  <div class="page">
+    <!-- Sidebar -->
+    <aside class="navbar navbar-vertical navbar-expand-lg" data-bs-theme="dark">
+      <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <h1 class="navbar-brand navbar-brand-autodark">
+          <a href="./">
+            <span class="navbar-brand-image"><i class="ti ti-fingerprint fs-1"></i></span>
+            Massive Dynamic
+          </a>
+        </h1>
+        <div class="collapse navbar-collapse" id="sidebar-menu">
+          <ul class="navbar-nav pt-lg-3">
+            <li class="nav-item">
+              <a class="nav-link" href="./">
+                <span class="nav-link-icon d-md-none d-lg-inline-block"><i class="ti ti-home"></i></span>
+                <span class="nav-link-title">Dashboard</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="empleado.html">
+                <span class="nav-link-icon d-md-none d-lg-inline-block"><i class="ti ti-user"></i></span>
+                <span class="nav-link-title">Por Empleado</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="sucursal.html">
+                <span class="nav-link-icon d-md-none d-lg-inline-block"><i class="ti ti-building"></i></span>
+                <span class="nav-link-title">Por Sucursal</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="./#registros">
+                <span class="nav-link-icon d-md-none d-lg-inline-block"><i class="ti ti-list"></i></span>
+                <span class="nav-link-title">Registros</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </aside>
+
+    <div class="page-wrapper">
+      <div class="page-header d-print-none">
+        <div class="container-xl">
+          <div class="row g-2 align-items-center">
+            <div class="col">
+              <h2 class="page-title">Vista por Sucursal</h2>
+              <div class="text-muted mt-1">Análisis comparativo y detalle por sucursal</div>
+            </div>
+            <div class="col-auto ms-auto d-print-none">
+              <div class="btn-list">
+                <button class="btn theme-toggle-btn" title="Cambiar tema"><i class="ti ti-moon"></i></button>
+                <select class="form-select" id="sucursal-select" style="min-width: 280px;">
+                  <option value="">Selecciona una sucursal...</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-body">
+        <div class="container-xl">
+
+          <!-- Comparativa General Sucursales -->
+          <div class="row row-cards">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header"><h3 class="card-title">Comparativa entre Sucursales</h3></div>
+                <div class="card-body">
+                  <div id="chart-all-sucursales" class="chart-container"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Info Sucursal seleccionada -->
+          <div id="sucursal-info" class="row row-cards mt-3" style="display:none;">
+            <div class="col-12">
+              <div class="card card-sm">
+                <div class="card-body d-flex align-items-center">
+                  <div class="avatar avatar-lg bg-success text-white me-3"><i class="ti ti-building fs-2"></i></div>
+                  <div>
+                    <h3 class="card-title m-0" id="suc-name">-</h3>
+                    <div class="text-muted" id="suc-meta">-</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- KPIs Sucursal -->
+          <div id="kpi-sucursal" class="row row-cards mt-3" style="display:none;">
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+              <div class="card kpi-card">
+                <div class="kpi-value text-primary" id="suc-kpi-emp">0</div>
+                <div class="kpi-label">Empleados</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+              <div class="card kpi-card">
+                <div class="kpi-value text-info" id="suc-kpi-reg">0</div>
+                <div class="kpi-label">Registros</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+              <div class="card kpi-card">
+                <div class="kpi-value text-secondary" id="suc-kpi-prom">0</div>
+                <div class="kpi-label">Prom/Empleado</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+              <div class="card kpi-card">
+                <div class="kpi-value text-success" id="suc-kpi-ent">0</div>
+                <div class="kpi-label">Entradas</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+              <div class="card kpi-card">
+                <div class="kpi-value text-warning" id="suc-kpi-sal">0</div>
+                <div class="kpi-label">Salidas</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+              <div class="card kpi-card">
+                <div class="kpi-value text-danger" id="suc-kpi-falt">0</div>
+                <div class="kpi-label">Faltas</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+              <div class="card kpi-card">
+                <div class="kpi-value text-orange" id="suc-kpi-hextra">0</div>
+                <div class="kpi-label">Horas Extra</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+              <div class="card kpi-card">
+                <div class="kpi-value text-cyan" id="suc-kpi-permisos">0</div>
+                <div class="kpi-label">Permisos</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+              <div class="card kpi-card">
+                <div class="kpi-value text-purple" id="suc-kpi-vacaciones">0</div>
+                <div class="kpi-label">Vacaciones</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+              <div class="card kpi-card">
+                <div class="kpi-value text-pink" id="suc-kpi-incapacidades">0</div>
+                <div class="kpi-label">Incapacidades</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+              <div class="card kpi-card">
+                <div class="kpi-value text-teal" id="suc-kpi-olvido">0</div>
+                <div class="kpi-label">Olvidos</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+              <div class="card kpi-card">
+                <div class="kpi-value text-indigo" id="suc-kpi-dias">0</div>
+                <div class="kpi-label">Días con Registro</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Gráficos Sucursal -->
+          <div id="charts-sucursal" class="row row-cards mt-3" style="display:none;">
+            <div class="col-lg-6">
+              <div class="card">
+                <div class="card-header"><h3 class="card-title">Registros por Día</h3></div>
+                <div class="card-body"><div id="chart-suc-timeline" class="chart-container"></div></div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card">
+                <div class="card-header"><h3 class="card-title">Eventos por Tipo</h3></div>
+                <div class="card-body"><div id="chart-suc-eventos" class="chart-container"></div></div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card">
+                <div class="card-header"><h3 class="card-title">Comparativa Empleados</h3></div>
+                <div class="card-body"><div id="chart-suc-empleados" class="chart-container"></div></div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card">
+                <div class="card-header"><h3 class="card-title">Arquetipos en Sucursal</h3></div>
+                <div class="card-body"><div id="chart-suc-arquetipos" class="chart-container"></div></div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card">
+                <div class="card-header"><h3 class="card-title">Actividad por Día de la Semana</h3></div>
+                <div class="card-body"><div id="chart-suc-weekday" class="chart-container"></div></div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card">
+                <div class="card-header"><h3 class="card-title">Tendencia de Puntualidad</h3></div>
+                <div class="card-body"><div id="chart-suc-puntualidad" class="chart-container"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabla empleados sucursal -->
+          <div id="table-sucursal-emp" class="row row-cards mt-3" style="display:none;">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header"><h3 class="card-title">Empleados de la Sucursal</h3></div>
+                <div class="card-body p-0">
+                  <div class="table-responsive">
+                    <table class="table table-vcenter table-striped table-hover table-sm">
+                      <thead>
+                        <tr>
+                          <th>Empleado</th><th>Arquetipo</th><th>Días</th><th>Prom Horas</th>
+                          <th>Retardos</th><th>Faltas</th><th>H.Extra</th><th>Puntualidad</th><th>Indicador</th>
+                        </tr>
+                      </thead>
+                      <tbody id="suc-emp-body"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabla registros sucursal -->
+          <div id="table-sucursal-reg" class="row row-cards mt-3" style="display:none;">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header"><h3 class="card-title">Registros de la Sucursal</h3></div>
+                <div class="card-body p-0">
+                  <div class="table-responsive">
+                    <table class="table table-vcenter table-striped table-hover table-sm">
+                      <thead>
+                        <tr><th>Fecha/Hora</th><th>Empleado</th><th>Evento</th><th>Dispositivo</th><th>Estado</th></tr>
+                      </thead>
+                      <tbody id="suc-reg-body"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <footer class="footer footer-transparent d-print-none mt-4">
+            <div class="container-xl">
+              <div class="row text-center align-items-center flex-row-reverse">
+                <div class="col-12 col-lg-auto mt-3 mt-lg-0">
+                  <ul class="list-inline list-inline-dots mb-0">
+                    <li class="list-inline-item">Massive Dynamic &copy; 2025</li>
+                    <li class="list-inline-item">Sistema de Asistencia NFC</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </footer>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0/dist/js/tabler.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <script src="theme.js"></script>
+  <script src="analisis.js"></script>
+  <script src="charts-theme.js"></script>
+  <script src="sucursal.js"></script>
+</body>
+</html>

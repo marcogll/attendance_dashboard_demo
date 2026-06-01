@@ -1,0 +1,13 @@
+::1 - - [01/Jun/2026 15:04:54] "GET / HTTP/1.1" 200 -
+::1 - - [01/Jun/2026 15:17:06] "GET /sucursal.html HTTP/1.1" 200 -
+::1 - - [01/Jun/2026 15:17:06] "GET /charts-theme.js HTTP/1.1" 200 -
+::1 - - [01/Jun/2026 15:17:06] "GET /sucursal.js HTTP/1.1" 200 -
+::1 - - [01/Jun/2026 15:17:06] "GET /theme.js HTTP/1.1" 200 -
+::1 - - [01/Jun/2026 15:17:06] "GET /analisis.js HTTP/1.1" 200 -
+::1 - - [01/Jun/2026 15:17:09] "GET /data.json HTTP/1.1" 200 -
+::1 - - [01/Jun/2026 15:17:09] code 404, message File not found
+::1 - - [01/Jun/2026 15:17:09] "GET /favicon.ico HTTP/1.1" 404 -
+::1 - - [01/Jun/2026 15:17:11] "GET / HTTP/1.1" 200 -
+::1 - - [01/Jun/2026 15:17:11] "GET /app.js HTTP/1.1" 200 -
+::1 - - [01/Jun/2026 15:18:06] "GET /empleado.html HTTP/1.1" 304 -
+::1 - - [01/Jun/2026 15:18:06] "GET /empleado.js HTTP/1.1" 304 -

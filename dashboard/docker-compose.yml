@@ -1,0 +1,8 @@
+services:
+  dashboard:
+    build: .
+    image: massive-dynamic-dashboard:latest
+    container_name: massive-dynamic-dashboard
+    ports:
+      - "8080:80"
+    restart: unless-stopped
