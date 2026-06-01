@@ -1,13 +1,11 @@
 services:
   dashboard:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: .
     image: attendance-dashboard:latest
     container_name: attendance-dashboard
-    ports:
-      - "3000:3000"
     restart: unless-stopped
+    # NOTA: No expongas puertos del host. Coolify/Traefik maneja el proxy inverso.
+    # Los contenedores comparten puertos internos (3000) sin conflicto en redes Docker.
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/"]
       interval: 30s
